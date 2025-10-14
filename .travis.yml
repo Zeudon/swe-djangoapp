@@ -2,7 +2,7 @@ language: python
 python:
   - "3.11"
 
-services: []
+# services: []
 
 # Faster dependency caching
 cache: pip
@@ -25,10 +25,11 @@ script:
   - black --check .
   - flake8 .
   # Tests with coverage
-  - coverage run manage.py test
+  - coverage run --source='.' manage.py test
+  - coverage report
 
 after_success:
-  - coveralls
+  - coveralls --verbose --service=travis-pro
 
 # Deploy to Elastic Beanstalk ONLY on main branch and only if tests passed
 deploy:
@@ -36,9 +37,9 @@ deploy:
   access_key_id: $AWS_ACCESS_KEY_ID
   secret_access_key: $AWS_SECRET_ACCESS_KEY
   region: ${AWS_DEFAULT_REGION:-us-west-2}
-  app: "django-tutorial"           # <-- your EB Application name
-  env: "django-env"       # <-- your EB Environment name
-  bucket: "elasticbeanstalk-us-west-2-063509147729"  # <-- your EB S3 bucket
+  app: "django-tutorial"           
+  env: "django-env"       
+  bucket: "elasticbeanstalk-us-west-2-063509147729"  
   skip_cleanup: true
   on:
     branch: main

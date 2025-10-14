@@ -1,0 +1,44 @@
+language: python
+python:
+  - "3.11"
+
+services: []
+
+# Faster dependency caching
+cache: pip
+
+env:
+  global:
+    - DJANGO_SETTINGS_MODULE=mysite.settings
+
+install:
+  - pip install --upgrade pip
+  - pip install -r requirements.txt
+  - pip install black flake8 coverage coveralls gunicorn
+
+before_script:
+  # If your Django tests need DB migrations:
+  - python manage.py migrate --noinput
+
+script:
+  # Code style & lint
+  - black --check .
+  - flake8 .
+  # Tests with coverage
+  - coverage run manage.py test
+
+after_success:
+  - coveralls
+
+# Deploy to Elastic Beanstalk ONLY on main branch and only if tests passed
+deploy:
+  provider: elasticbeanstalk
+  access_key_id: $AWS_ACCESS_KEY_ID
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
+  region: ${AWS_DEFAULT_REGION:-us-west-2}
+  app: "django-tutorial"           # <-- your EB Application name
+  env: "django-env"       # <-- your EB Environment name
+  bucket: "elasticbeanstalk-us-west-2-063509147729"  # <-- your EB S3 bucket
+  skip_cleanup: true
+  on:
+    branch: main

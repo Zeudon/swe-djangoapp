@@ -1,0 +1,11 @@
+[run]
+branch = True
+source = swe-djangoapp
+omit =
+    */migrations/*
+    manage.py
+
+[report]
+show_missing = True
+# You can enforce a minimum once you write tests:
+# fail_under = 80

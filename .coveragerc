@@ -1,9 +1,8 @@
 [run]
 branch = True
-source = swe-djangoapp
+source = django-tutorial
 omit =
     */migrations/*
-    manage.py
 
 [report]
 show_missing = True
